@@ -40,7 +40,6 @@ button { font: inherit; }
   margin-bottom: 18px;
 }
 
-.kicker,
 .dialog-eyebrow {
   margin: 0 0 5px;
   color: var(--red);
@@ -223,41 +222,6 @@ canvas {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.notes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 13px;
-  margin-top: 18px;
-}
-
-.notes-grid article {
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(255, 250, 241, 0.63);
-}
-
-.step-number {
-  margin: 0 0 18px;
-  color: var(--red);
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-}
-
-.notes-grid h2 {
-  margin: 0 0 7px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.2rem;
-}
-
-.notes-grid p:last-child {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.86rem;
-  line-height: 1.55;
-}
-
 code {
   padding: 0.1em 0.35em;
   border-radius: 5px;
@@ -335,7 +299,6 @@ code {
   .status-pill { width: 100%; max-width: none; }
   .toolbar { top: 10px; right: 10px; }
   .toolbar button { min-width: 34px; min-height: 34px; font-size: .78rem; }
-  .notes-grid { grid-template-columns: 1fr; }
   .interact-button { bottom: 18px; }
 }
 
