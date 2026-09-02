@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#191716" />
+  <title>Walkable UGA Pixel Campus Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="kicker">Interactive map prototype</p>
+        <h1>Walkable UGA Pixel Campus</h1>
+      </div>
+      <div class="status-pill" aria-live="polite">
+        <span class="status-dot"></span>
+        <span id="locationLabel">Use WASD, arrow keys, or click a destination</span>
+      </div>
+    </header>
+
+    <section class="game-card" aria-label="Interactive campus map">
+      <div id="gameStage" class="game-stage">
+        <canvas id="gameCanvas" aria-label="A walkable pixel-art campus map"></canvas>
+
+        <div class="toolbar" aria-label="Map controls">
+          <button id="zoomOut" type="button" title="Zoom out" aria-label="Zoom out">−</button>
+          <button id="zoomIn" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+          <button id="resetButton" type="button" title="Return to the Arch">Reset</button>
+          <button id="debugButton" type="button" title="Show walkability and interaction zones" aria-pressed="false">Map data</button>
+          <button id="helpButton" type="button" title="Show controls">?</button>
+        </div>
+
+        <div class="touch-pad" aria-label="Touch movement controls">
+          <button class="touch-up" data-direction="up" aria-label="Move up">▲</button>
+          <button class="touch-left" data-direction="left" aria-label="Move left">◀</button>
+          <button class="touch-down" data-direction="down" aria-label="Move down">▼</button>
+          <button class="touch-right" data-direction="right" aria-label="Move right">▶</button>
+        </div>
+
+        <button id="interactButton" class="interact-button" type="button" hidden>
+          Explore
+        </button>
+
+        <div id="loadingCard" class="loading-card">
+          <span class="loading-spinner" aria-hidden="true"></span>
+          Loading the little world…
+        </div>
+      </div>
+    </section>
+
+    <section class="notes-grid">
+      <article>
+        <p class="step-number">01</p>
+        <h2>Move</h2>
+        <p>Use WASD, the arrow keys, the touch pad, or click anywhere walkable. Hold Shift to run.</p>
+      </article>
+      <article>
+        <p class="step-number">02</p>
+        <h2>Explore</h2>
+        <p>Approach the Arch, coffee shop, library, quad, historic buildings, or stadium overlook and press E.</p>
+      </article>
+      <article>
+        <p class="step-number">03</p>
+        <h2>Edit</h2>
+        <p>Open <code>map-config.js</code> to adjust collision shapes, spawn position, paths, and interactive destinations.</p>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="poiDialog" class="poi-dialog">
+    <button id="dialogClose" class="dialog-close" type="button" aria-label="Close">×</button>
+    <p id="dialogEyebrow" class="dialog-eyebrow"></p>
+    <h2 id="dialogTitle"></h2>
+    <p id="dialogBody"></p>
+    <div class="dialog-actions">
+      <button id="dialogPrimary" type="button">Continue exploring</button>
+    </div>
+  </dialog>
+
+  <dialog id="helpDialog" class="poi-dialog help-dialog">
+    <button id="helpClose" class="dialog-close" type="button" aria-label="Close">×</button>
+    <p class="dialog-eyebrow">Controls</p>
+    <h2>Walk around the campus</h2>
+    <dl>
+      <div><dt>Move</dt><dd>WASD or arrow keys</dd></div>
+      <div><dt>Run</dt><dd>Hold Shift</dd></div>
+      <div><dt>Walk to point</dt><dd>Click or tap the map</dd></div>
+      <div><dt>Interact</dt><dd>E, Enter, or Explore</dd></div>
+      <div><dt>Zoom</dt><dd>+ and − buttons</dd></div>
+      <div><dt>Debug map</dt><dd>Map data button</dd></div>
+    </dl>
+  </dialog>
+
+  <script src="map-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
