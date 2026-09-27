@@ -38,6 +38,13 @@
           <button class="touch-right" data-direction="right" aria-label="Move right">▶</button>
         </div>
 
+        <div id="inventory" class="inventory" aria-live="polite" hidden></div>
+
+        <div id="sceneBanner" class="scene-banner" aria-live="polite">
+          <span id="sceneBannerEyebrow" class="scene-banner-eyebrow"></span>
+          <span id="sceneBannerTitle" class="scene-banner-title"></span>
+        </div>
+
         <button id="interactButton" class="interact-button" type="button" hidden>
           Explore
         </button>
@@ -55,9 +62,8 @@
     <p id="dialogEyebrow" class="dialog-eyebrow"></p>
     <h2 id="dialogTitle"></h2>
     <p id="dialogBody"></p>
-    <div class="dialog-actions">
-      <button id="dialogPrimary" type="button">Continue exploring</button>
-    </div>
+    <ul id="dialogList" class="dialog-list" hidden></ul>
+    <div id="dialogActions" class="dialog-actions"></div>
   </dialog>
 
   <dialog id="helpDialog" class="poi-dialog help-dialog">
@@ -69,12 +75,16 @@
       <div><dt>Run</dt><dd>Hold Shift</dd></div>
       <div><dt>Walk to point</dt><dd>Click or tap the map</dd></div>
       <div><dt>Interact</dt><dd>E, Enter, or Explore</dd></div>
+      <div><dt>Go inside</dt><dd>Walk up to a door, or click the Library or Coffee shop</dd></div>
+      <div><dt>Leave</dt><dd>Walk back out through the door</dd></div>
       <div><dt>Zoom</dt><dd>+ and − buttons</dd></div>
       <div><dt>Debug map</dt><dd>Map data button</dd></div>
     </dl>
   </dialog>
 
   <script src="map-config.js"></script>
+  <script src="pixel-kit.js"></script>
+  <script src="interiors.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

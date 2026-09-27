@@ -73,6 +73,25 @@ window.CAMPUS_MAP = {
     polygons: []
   },
 
+  // Walking into a door zone enters that building. `approach` is where
+  // click-to-enter walks to; `exitSpawn` is where the player reappears.
+  doors: [
+    {
+      id: 'library',
+      to: 'library',
+      zone: { x: 938, y: 972, width: 76, height: 28 },
+      approach: { x: 976, y: 988 },
+      exitSpawn: { x: 976, y: 1030, direction: 'down' }
+    },
+    {
+      id: 'coffee',
+      to: 'coffee',
+      zone: { x: 160, y: 912, width: 52, height: 26 },
+      approach: { x: 186, y: 926 },
+      exitSpawn: { x: 186, y: 964, direction: 'down' }
+    }
+  ],
+
   foregroundRules: [
     {
       image: 'foreground-arch.png',
@@ -96,12 +115,14 @@ window.CAMPUS_MAP = {
     },
     {
       id: 'coffee',
-      x: 326,
-      y: 934,
-      radius: 102,
+      x: 236,
+      y: 948,
+      radius: 96,
       title: 'Campus Coffee',
       eyebrow: 'A small social destination',
-      body: 'This could open a menu, trigger dialogue, award a daily item, start a minigame, or act as a meeting place for other avatars.'
+      label: 'Enter Campus Coffee',
+      enter: 'coffee',
+      target: [[90, 704, 220, 232]]
     },
     {
       id: 'library',
@@ -110,7 +131,9 @@ window.CAMPUS_MAP = {
       radius: 98,
       title: 'Library',
       eyebrow: 'Academic destination',
-      body: 'Use a hotspot like this to open searchable resources, show events, enter an interior scene, or launch a focused study experience.'
+      label: 'Enter the Library',
+      enter: 'library',
+      target: [[867, 618, 315, 390]]
     },
     {
       id: 'quad',
