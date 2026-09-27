@@ -152,29 +152,27 @@
   // ---------- Scene preparation ----------
 
   // Builds a scene's background, prop sprites, NPCs, walk mask and nav grid
-  // the first time it is needed.
+  // the first time it is needed. Art is painted at 1 / pixelScale of world
+  // resolution and scaled up with nearest-neighbour sampling when drawn.
   function prepareScene(sc) {
     if (sc.runtime) return sc.runtime;
     const rt = { props: [], npcs: [] };
     const footprints = [];
+    const pixelScale = sc.pixelScale || 1;
 
-    if (sc.paint) {
-      rt.background = Kit.makeCanvas(sc.width, sc.height);
-      sc.paint(rt.background.getContext('2d'));
-    } else {
-      rt.background = images.map;
-    }
+    rt.background = Kit.makeCanvas(sc.width / pixelScale, sc.height / pixelScale);
+    sc.paint(rt.background.getContext('2d'));
 
     for (const prop of sc.props || []) {
       const [x, y, w, h] = prop.bounds;
       let sprite = null;
       if (prop.draw) {
-        sprite = Kit.makeCanvas(w, h);
+        sprite = Kit.makeCanvas(w / pixelScale, h / pixelScale);
         const g = sprite.getContext('2d');
-        g.translate(-x, -y);
+        g.translate(-x / pixelScale, -y / pixelScale);
         prop.draw(g);
       }
-      rt.props.push({ sprite, x, y, sortY: prop.sortY, live: prop.live });
+      rt.props.push({ sprite, x, y, w, h, sortY: prop.sortY, live: prop.live });
       if (prop.footprint) footprints.push(toRect(prop.footprint));
     }
 
@@ -908,9 +906,9 @@
       } else {
         const prop = drawable.item;
         if (prop.sprite) {
-          ctx.drawImage(prop.sprite, prop.x, prop.y);
-          if (playerDrawn && prop.x < px + 24 && prop.x + prop.sprite.width > px &&
-            prop.y < py + 26 && prop.y + prop.sprite.height > py) occluded = true;
+          ctx.drawImage(prop.sprite, prop.x, prop.y, prop.w, prop.h);
+          if (playerDrawn && prop.x < px + 24 && prop.x + prop.w > px &&
+            prop.y < py + 26 && prop.y + prop.h > py) occluded = true;
         }
         if (prop.live) prop.live(ctx, clock);
       }
@@ -922,12 +920,6 @@
       drawAvatar();
       ctx.restore();
     }
-  }
-
-  function shouldDrawForeground(rule) {
-    const bounds = rule.activeWhen;
-    return player.x >= bounds.xMin && player.x <= bounds.xMax &&
-      player.y >= bounds.yMin && player.y <= bounds.yMax;
   }
 
   function drawTransition() {
@@ -974,15 +966,11 @@
     ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * offsetX, dpr * offsetY);
     ctx.imageSmoothingEnabled = false;
 
-    ctx.drawImage(rt.background, 0, 0);
+    ctx.drawImage(rt.background, 0, 0, scene.width, scene.height);
     if (scene.drawUnder) scene.drawUnder(ctx, clock);
     if (debugVisible) ctx.drawImage(rt.debugMask, 0, 0);
     drawPathPreview();
     drawSorted(rt);
-
-    for (const rule of scene.foregroundRules || []) {
-      if (shouldDrawForeground(rule)) ctx.drawImage(images[rule.image], rule.x || 0, rule.y || 0);
-    }
     if (scene.drawOver) scene.drawOver(ctx, clock);
     if (debugVisible) drawHotspotDebug();
     drawTransition();
@@ -1228,15 +1216,7 @@
 
   async function start() {
     try {
-      const foregroundNames = [...new Set(CAMPUS.foregroundRules.map((rule) => rule.image))];
-      const loaded = await Promise.all([
-        loadImage(ASSET_URLS['campus-map.png'] || 'campus-map.png'),
-        loadImage(ASSET_URLS['avatar.png'] || 'avatar.png'),
-        ...foregroundNames.map((name) => loadImage(ASSET_URLS[name] || name))
-      ]);
-      images.map = loaded[0];
-      images.avatar = loaded[1];
-      foregroundNames.forEach((name, index) => { images[name] = loaded[index + 2]; });
+      images.avatar = await loadImage(ASSET_URLS['avatar.png'] || 'avatar.png');
 
       prepareScene(scene);
       grid = scene.runtime.grid;

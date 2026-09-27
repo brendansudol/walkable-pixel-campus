@@ -1,6 +1,6 @@
 # Walkable UGA Pixel Campus Prototype
 
-A dependency-free browser prototype that turns the generated campus illustration into a small walkable world.
+A dependency-free browser prototype of a small walkable pixel-art campus. All of the scenery is drawn in code at load time; the only image asset is the avatar sprite.
 
 ## Run it
 
@@ -27,12 +27,11 @@ It may also work by opening `index.html` directly, but a local server is the mor
 
 ## How it works
 
-The current campus art is used as one static background image. The app adds four data and rendering layers:
+The campus is a code-drawn recreation of the original generated illustration (kept for reference in `misc/campus.png`). `campus-art.js` paints it at half resolution, where one art pixel covers 2 × 2 world units, so it keeps the chunky look while lining up with the `1254 × 1254` coordinates in `map-config.js`.
 
-1. **Walkability mask** — broad ellipses, paths and plazas specify where feet may go.
-2. **Collision shapes** — buildings, the fountain and Arch pillars remove non-walkable space.
-3. **Interaction hotspots** — simple points with radii trigger the Library, Coffee, Quad and other cards.
-4. **Foreground overlay** — selected artwork is redrawn above the avatar to create a basic depth illusion at the Arch.
+- **Ground** is painted once into a background: the island slab, textured grass and lawn, brick paths with cream edges, the patio, steps, hedges, flower beds and the sign. Paths and lawns are drawn as canvas shapes, then thresholded into hard-edged masks and filled pixel by pixel with brick and grass patterns.
+- **Tall things** are depth-sorted props: the stadium, buildings, trees, lamps, the Arch and the patio umbrella. The avatar can walk behind trees and through the Arch, and a faint silhouette shows through when it's hidden.
+- **Gameplay data** sits on top as invisible layers: a walkability mask, collision shapes, interaction hotspots and door zones.
 
 Click-to-walk uses a small A* navigation grid generated from the same walkability mask. Keyboard movement uses continuous circle collision against the mask.
 
@@ -65,23 +64,21 @@ Most campus-specific data lives in `map-config.js`:
 - `walkable`
 - `obstacles`
 - `doors`
-- `foregroundRules`
 - `hotspots`
 
-Turn on **Map data** in the prototype while editing. Coordinates use the original image space: `1254 × 1254`.
+Turn on **Map data** in the prototype while editing. Coordinates are world units in a `1254 × 1254` space.
 
-## Replace the art
+## Edit the art
 
-Replace `campus-map.png` with another image of the same dimensions and edit the shapes in `map-config.js`. For a map with a different size, change `width` and `height` as well.
+The campus look lives in `campus-art.js`:
 
-For a production version, export the artwork as separate files instead of relying on one flattened image:
+- `RING`, `PATHS`, `PLAZAS` and `PATIO` shape the brick paths, in world units.
+- `TREES`, `BUSHES` and `LAMPS` place scenery, in art pixels (world ÷ 2).
+- Each building, the stadium and the Arch is an `addProp({ bounds, sortY, footprint, draw })` call. `sortY` is where the prop meets the ground, and `footprint` adds collision.
 
-- `ground.png` — grass, paths and water
-- `buildings-back.png` or individual building sprites
-- `props.png` — benches, lamps and signs
-- `foreground.png` — tree canopies, arches and roof edges that should cover the avatar
-- `collision` — polygons authored separately from visual artwork
-- `hotspots` — doors, destinations, dialogue triggers and spawn points
+If you move a building or path, update the matching `walkable` and `obstacles` shapes in `map-config.js` so collision still lines up.
+
+To swap in exported artwork instead, give the scene a `paint(g)` that draws an image and turn the tall pieces into props with sprites. The engine only needs a background, props with a `sortY`, and the gameplay layers.
 
 ## Add it to an existing application
 
@@ -99,9 +96,7 @@ For a larger game, move the scene into Phaser and author the map data in Tiled. 
 
 ## Prototype limitations
 
-- The map is a single flattened generated image, so most objects cannot independently animate or change.
-- On the campus map, occlusion is demonstrated only at the Arch. Interiors use proper depth-sorted props.
-- Interior art is hand-coded pixel drawing rather than exported artwork, which suits a prototype but would be slow to scale to many buildings.
+- All art is hand-coded pixel drawing rather than exported artwork. That suits a prototype and keeps the download tiny, but it would be slow to scale to many buildings.
 - Collision geometry is intentionally approximate and hand-authored.
 - The avatar is a small original placeholder sprite, not a character customization system.
 - The UGA name and marks are included only because they appear in the supplied concept art. Review institutional trademark and licensing requirements before public or commercial deployment.

@@ -5,8 +5,8 @@ window.CAMPUS_MAP = {
   // The player's feet begin in the right-hand opening of the Arch.
   spawn: { x: 646, y: 1087, direction: 'up' },
 
-  // The prototype treats this generated illustration as a visual backdrop.
-  // These shapes form an invisible walkability mask over it.
+  // The campus art is drawn in campus-art.js. These shapes form an invisible
+  // walkability mask over it.
   walkable: {
     ellipses: [
       // Central quad, surrounding walk and a little breathing room.
@@ -89,17 +89,6 @@ window.CAMPUS_MAP = {
       zone: { x: 160, y: 912, width: 52, height: 26 },
       approach: { x: 186, y: 926 },
       exitSpawn: { x: 186, y: 964, direction: 'down' }
-    }
-  ],
-
-  foregroundRules: [
-    {
-      image: 'foreground-arch.png',
-      x: 502,
-      y: 902,
-      // When the player's feet are north of this line, redraw the Arch over
-      // the avatar to create a simple under-the-arch depth illusion.
-      activeWhen: { xMin: 495, xMax: 728, yMin: 905, yMax: 1073 }
     }
   ],
 
